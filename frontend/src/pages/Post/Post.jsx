@@ -74,7 +74,7 @@ const Post = () => {
                   item?.video?.url?.startsWith("http")
                     ? item.video.url
                     : item?.video?.url
-                    ? `${BASE_URL}${item.video.url}`
+                    ? item.video.url
                     : null
                 }
                 className="w-full h-[420px] object-cover"
@@ -86,7 +86,7 @@ const Post = () => {
                   item?.image?.url?.startsWith("http")
                     ? item.image.url
                     : item?.image?.url
-                    ? `${BASE_URL}${item.image.url}`
+                    ? item.image.url
                     : null
                 }
                 alt={item?.title}

@@ -106,6 +106,11 @@ const createPost = async (req, res) => {
       });
       uploaded = await uploadPromise;
     } else {
+      // In production, require Cloudinary - don't fall back to local
+      if (process.env.NODE_ENV === 'production') {
+        return errorResponse(res, 500, "Cloudinary configuration required for production");
+      }
+
       // Local fallback: save to uploads/posts
       const uploadsDir = path.join(__dirname, '..', '..', 'uploads', 'posts');
       fs.mkdirSync(uploadsDir, { recursive: true });

@@ -184,6 +184,11 @@ const userProfileUpload = async (req, res) => {
 
     else {
 
+      // In production, require Cloudinary - don't fall back to local
+      if (process.env.NODE_ENV === 'production') {
+        return errorResponse(res, 500, "Cloudinary configuration required for production");
+      }
+
       const uploadsDir = path.join(__dirname, "..", "..", "uploads");
       fs.mkdirSync(uploadsDir, { recursive: true });
 

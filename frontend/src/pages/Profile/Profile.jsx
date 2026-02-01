@@ -159,7 +159,7 @@ const Profile = () => {
                 (authUser?.profile?.url?.startsWith("http")
                   ? authUser.profile.url
                   : authUser?.profile?.url
-                  ? `${BASE_URL}${authUser.profile.url}`
+                  ? authUser.profile.url
                   : "/avatar.jpg")
               }
               className="w-36 h-36 rounded-full border object-cover"
