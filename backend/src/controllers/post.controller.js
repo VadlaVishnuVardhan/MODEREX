@@ -84,9 +84,13 @@ const createPost = async (req, res) => {
       process.env.CLOUDINARY_CLOUD_API_SECRET
     );
 
+    // Force Cloudinary usage in production to avoid mixed content issues
+    const isProduction = process.env.NODE_ENV === 'production';
+    const shouldUseCloudinary = useCloudinary && (isProduction || !isProduction);
+
     let uploaded = null;
 
-    if (useCloudinary) {
+    if (shouldUseCloudinary) {
       const uploadPromise = new Promise((resolve, reject) => {
         const upload = cloudinary.uploader.upload_stream(
           {
