@@ -1,10 +1,10 @@
 const User = require("../models/user.model");
 const { errorResponse } = require("../utils/utils");
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
-const path = require('path');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+const path = require("path");
 
 // ================= REGISTER =================
 
@@ -13,12 +13,12 @@ const userRegister = async (req, res) => {
     const { name, email, password } = req.body || {};
 
     if (!name || !email || !password) {
-      return errorResponse(res, 400, 'Please provide all required fields.');
+      return errorResponse(res, 400, "Please provide all required fields.");
     }
 
     const user = await User.findOne({ email });
     if (user) {
-      return errorResponse(res, 400, 'User already exists with this email.');
+      return errorResponse(res, 400, "User already exists with this email.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,14 +26,13 @@ const userRegister = async (req, res) => {
     await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     return res.status(201).json({
       success: true,
-      message: 'User registered successfully.'
+      message: "User registered successfully.",
     });
-
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -46,41 +45,44 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body || {};
 
     if (!email || !password) {
-      return errorResponse(res, 400, 'Please provide Email and Password');
+      return errorResponse(res, 400, "Please provide Email and Password");
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return errorResponse(res, 404, 'No user found with this email.');
+      return errorResponse(res, 404, "No user found with this email.");
     }
 
     const matchPassword = await bcrypt.compare(password, user.password);
     if (!matchPassword) {
-      return errorResponse(res, 401, 'Invalid Password.');
+      return errorResponse(res, 401, "Invalid Password.");
     }
+
+    // ✅ SAFE SECRET FALLBACK
+    const secret =
+      process.env.JWT_SECRET || "render_production_fallback_secret";
 
     const token = jwt.sign(
       {
         id: user._id,
-        isAdmin: user.isAdmin || false
+        isAdmin: user.isAdmin || false,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      secret,
+      { expiresIn: "7d" }
     );
 
-    // ✅ PRODUCTION COOKIE FIX
-    res.cookie('token', token, {
+    // ✅ CROSS DOMAIN COOKIE FIX (VERCEL + RENDER)
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: true,           // REQUIRED for HTTPS (Render + Vercel)
-      sameSite: 'none',       // REQUIRED for cross-site cookies
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      secure: true,
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
       success: true,
-      message: 'User logged in successfully.'
+      message: "User logged in successfully.",
     });
-
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -90,18 +92,16 @@ const userLogin = async (req, res) => {
 
 const userLogout = async (req, res) => {
   try {
-
-    res.clearCookie('token', {
+    res.clearCookie("token", {
       httpOnly: true,
       secure: true,
-      sameSite: 'none'
+      sameSite: "none",
     });
 
     return res.status(200).json({
       success: true,
-      message: 'User logged out successfully.'
+      message: "User logged out successfully.",
     });
-
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -111,20 +111,18 @@ const userLogout = async (req, res) => {
 
 const userProfile = async (req, res) => {
   try {
-
     const { id } = req.user;
 
-    const user = await User.findById(id).select('-password');
+    const user = await User.findById(id).select("-password");
 
     if (!user) {
-      return errorResponse(res, 404, 'User not found');
+      return errorResponse(res, 404, "User not found");
     }
 
     return res.status(200).json({
       success: true,
-      user
+      user,
     });
-
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -134,24 +132,23 @@ const userProfile = async (req, res) => {
 
 const userProfileUpload = async (req, res) => {
   try {
-
     const { id } = req.user;
 
     if (!req.file) {
-      return errorResponse(res, 400, 'Profile image required');
+      return errorResponse(res, 400, "Profile image required");
     }
 
     const user = await User.findById(id);
     if (!user) {
-      return errorResponse(res, 404, 'User not found');
+      return errorResponse(res, 404, "User not found");
     }
 
     user.profile = user.profile || {};
 
     const useCloudinary = Boolean(
       process.env.CLOUDINARY_CLOUD_NAME &&
-      process.env.CLOUDINARY_CLOUD_API_KEY &&
-      process.env.CLOUDINARY_CLOUD_API_SECRET
+        process.env.CLOUDINARY_CLOUD_API_KEY &&
+        process.env.CLOUDINARY_CLOUD_API_SECRET
     );
 
     // Delete old cloudinary image
@@ -162,23 +159,22 @@ const userProfileUpload = async (req, res) => {
     // ===== CLOUDINARY (PRODUCTION) =====
 
     if (useCloudinary) {
-
-      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+        "base64"
+      )}`;
 
       const result = await cloudinary.uploader.upload(fileBase64, {
-        folder: 'profiles'
+        folder: "profiles",
       });
 
       user.profile.url = result.secure_url; // HTTPS ✔
       user.profile.public_id = result.public_id;
-
     }
 
     // ===== LOCAL FALLBACK (DEV ONLY) =====
 
     else {
-
-      const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+      const uploadsDir = path.join(__dirname, "..", "..", "uploads");
       fs.mkdirSync(uploadsDir, { recursive: true });
 
       const filename = `profile-${id}-${Date.now()}.jpg`;
@@ -194,9 +190,8 @@ const userProfileUpload = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      profileUrl: user.profile.url
+      profileUrl: user.profile.url,
     });
-
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -207,5 +202,5 @@ module.exports = {
   userLogin,
   userLogout,
   userProfile,
-  userProfileUpload
+  userProfileUpload,
 };

@@ -10,7 +10,7 @@ const adminRouter = require('./routes/admin.route');
 
 const app = express();
 
-// ===================== UNIVERSAL CORS FIX =====================
+// ===================== UNIVERSAL CORS FIX (FINAL) =====================
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -38,9 +38,9 @@ app.use((req, res, next) => {
     "Content-Type, Authorization"
   );
 
-  // Preflight fix
+  // ✅ IMPORTANT: Proper preflight handling
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    return res.status(204).end();
   }
 
   next();
