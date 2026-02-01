@@ -155,14 +155,7 @@ const Profile = () => {
           <div className="relative">
 
             <img
-              src={
-                previewProfile ||
-                (authUser?.profile?.url?.startsWith("http")
-                  ? authUser.profile.url
-                  : authUser?.profile?.url
-                  ? authUser.profile.url
-                  : "/avatar.jpg")
-              }
+              src={previewProfile || resolveUrl(authUser?.profile?.url) || "/avatar.svg"}
               className="w-36 h-36 rounded-full border object-cover"
               alt="profile"
             />
