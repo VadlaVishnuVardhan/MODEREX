@@ -11,30 +11,10 @@ const adminRouter = require('./routes/admin.route');
 
 const app = express();
 
-// ===================== CORS (FINAL SAFE CONFIG) =====================
-
-// IMPORTANT: Put CORS FIRST (before routes, cookies, body parsers)
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-  );
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
+// ===================== CORS CONFIG =====================
 
 app.use(cors({
+  origin: ['https://moderex.vercel.app'],
   credentials: true
 }));
 
