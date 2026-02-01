@@ -15,6 +15,19 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("post");
   const [profileImage, setProfileImage] = useState(null);
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 3 * 1024 * 1024) {
+      toast.warn("Max 3MB allowed");
+      return;
+    }
+
+    setPreviewProfile(URL.createObjectURL(file));
+    setProfileImage(file);
+  };
+
   const [loading, setLoading] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -181,12 +194,7 @@ const Profile = () => {
               {authUser?.name}
             </h2>
 
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setProfileImage(e.target.files[0])}
-              className="mb-3"
-            />
+
 
             <button
               onClick={handleProfileUpload}
