@@ -11,39 +11,41 @@ const adminRouter = require('./routes/admin.route');
 
 const app = express();
 
-// ================= FINAL CORS CONFIG =================
+// ===================== CORS (FINAL SAFE CONFIG) =====================
+
+// IMPORTANT: Put CORS FIRST (before routes, cookies, body parsers)
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 app.use(cors({
-  origin: function (origin, callback) {
-
-    // Allow requests with no origin (Postman, mobile apps)
-    if (!origin) return callback(null, true);
-
-    // Allow localhost (development)
-    if (origin.startsWith("http://localhost")) {
-      return callback(null, true);
-    }
-
-    // Allow ALL Vercel domains (production + preview)
-    if (origin.includes(".vercel.app")) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("CORS not allowed"));
-  },
   credentials: true
 }));
 
-app.options("*", cors());
+// ===================================================================
 
-// =====================================================
-
-// MIDDLEWARE
+// BODY PARSER
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// STATIC FILES (UPLOADS)
+// STATIC FILES
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // TEST ROUTE
