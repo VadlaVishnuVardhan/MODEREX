@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
@@ -11,14 +10,43 @@ const adminRouter = require('./routes/admin.route');
 
 const app = express();
 
-// ===================== CORS CONFIG =====================
+// ===================== UNIVERSAL CORS FIX =====================
 
-app.use(cors({
-  origin: ['https://moderex.vercel.app', 'https://moderex-gadie4ud6-vadla-vishnu-vardhans-projects.vercel.app', 'https://moderex-j8bpgc10z-vadla-vishnu-vardhans-projects.vercel.app'],
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://moderex.vercel.app"
+];
 
-// ===================================================================
+app.use((req, res, next) => {
+
+  const origin = req.headers.origin;
+
+  if (
+    allowedOrigins.includes(origin) ||
+    origin?.includes("vercel.app")
+  ) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+
+  // Preflight fix
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
+// ============================================================
 
 // BODY PARSER
 app.use(express.json());
