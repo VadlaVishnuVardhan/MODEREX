@@ -9,17 +9,21 @@ const fixProfileImages = async () => {
     await connectDatabase();
     console.log('Connected to database');
 
-    // Find all users with profile URLs containing localhost
+    // Find all users with profile URLs containing localhost or local uploads
     const usersToUpdate = await User.find({
-      'profile.url': { $regex: /^\/uploads\/profile-/ }
+      $or: [
+        { 'profile.url': { $regex: /^http:\/\/localhost:3000\/uploads\/profile-/ } },
+        { 'profile.url': { $regex: /^\/uploads\/profile-/ } }
+      ]
     });
 
-    console.log(`Found ${usersToUpdate.length} users with localhost profile URLs`);
+    console.log(`Found ${usersToUpdate.length} users with local profile URLs`);
 
     for (const user of usersToUpdate) {
       const oldUrl = user.profile.url;
-      // Replace localhost:3000 with production URL
-      const newUrl = oldUrl.replace(/^\/uploads/, 'https://moderex.onrender.com/uploads');
+      // Replace localhost URLs with production HTTPS URLs
+      let newUrl = oldUrl.replace(/^http:\/\/localhost:3000\/uploads/, 'https://moderex.onrender.com/uploads');
+      newUrl = newUrl.replace(/^\/uploads/, 'https://moderex.onrender.com/uploads');
 
       await User.updateOne(
         { _id: user._id },
