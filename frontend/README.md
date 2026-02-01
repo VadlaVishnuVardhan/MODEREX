@@ -4,13 +4,35 @@ Moderex is a social media platform with integrated AI-powered content moderation
 
 ## Features
 
-- **AI Content Moderation**: Automatic detection of hate speech, self-harm, sexual content, violence, and spam
-- **Real-time Flagging**: Inappropriate comments are flagged instantly for review
-- **Admin Dashboard**: Comprehensive dashboard for reviewing and managing flagged content
-- **User Authentication**: Secure login and registration system
-- **Post Management**: Create, view, and interact with posts and reels
-- **Comment System**: Interactive commenting with moderation
-- **Responsive Design**: Modern UI built with React and Tailwind CSS
+### AI Content Moderation
+Automatic detection of hate speech, self-harm, sexual content, violence, and spam using OpenAI's Moderation API.
+
+### User Profile
+![User Profile](frontend\images\profile.png)
+User Profile page to manage profile details, view posts, and perform quick actions like save and logout.
+
+### Real-time Flagging
+![Real-time Flagging](frontend\images\post_management.png)
+Inappropriate comments are flagged instantly for review, with severe violations auto-rejected.
+
+### Admin Dashboard
+![Admin Dashboard](frontend\images\Admin_dashboard.png)
+Comprehensive dashboard for reviewing and managing flagged content, with statistics and filtering options.
+
+### User Authentication
+![User Authentication](frontend\images\user_auth.png)
+Secure login and registration system with JWT tokens and password hashing.
+
+### Post Management
+![Post Management](frontend\images\post_management.png)
+Create, view, and interact with posts and reels, including image and video uploads via Cloudinary.
+
+### Comment System
+![Comment System](frontend\images\comments.png)
+Interactive commenting with built-in moderation to maintain a safe community environment.
+
+### Responsive Design
+Modern UI built with React and Tailwind CSS, optimized for all device sizes.
 
 ## Tech Stack
 
