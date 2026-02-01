@@ -154,16 +154,21 @@ const Profile = () => {
 
           <div className="relative">
 
-            <img
-              src={
-                previewProfile ||
-                (authUser?.profile?.url
-                  ? resolveUrl(authUser.profile.url)
-                  : "/avatar.svg")
-              }
-              className="w-36 h-36 rounded-full border object-cover"
-              alt="profile"
-            />
+            <p>{authUser?.profile?.url}</p>
+
+            {(previewProfile || authUser?.profile?.url) && (
+              <img
+                src={previewProfile || authUser.profile.url}
+                alt="profile"
+                style={{
+                  width: "110px",
+                  height: "110px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "2px solid #e5e7eb"
+                }}
+              />
+            )}
 
             <input
               type="file"
