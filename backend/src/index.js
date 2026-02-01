@@ -3,51 +3,53 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
+
 const connectDatabase = require('./config/database');
 const authRouter = require('./routes/user.route');
 const postsRouter = require('./routes/post.route');
 const adminRouter = require('./routes/admin.route');
 
-// MIDDLEWARE
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// ================= CORS CONFIG (FINAL FIX) =================
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (origin && origin.startsWith('http://localhost')) {
-      callback(null, true);
-    } else if (!origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://moderex.vercel.app",
+    "https://moderex-dofcymt4p-vadla-vishnu-vardhans-projects.vercel.app"
+  ],
   credentials: true
 }));
 
+app.options("*", cors());
+
+// ===========================================================
+
+// MIDDLEWARE
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Serve uploaded files when using local storage fallback
+// STATIC FILES (UPLOADS)
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-// ROUTES
+// TEST ROUTE
 app.get('/', (req, res) => {
   res.json({
-    message: 'server is running...'
+    message: 'Server is running successfully 🚀'
   });
 });
 
-// APPLICATION ROUTES
+// API ROUTES
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/posts', postsRouter);
 app.use('/api/v1/admin', adminRouter);
 
+// SERVER START
 const PORT = process.env.PORT || 3000;
 
-// APP LISTENING
 app.listen(PORT, async () => {
   await connectDatabase();
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
