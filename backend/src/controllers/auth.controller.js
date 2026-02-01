@@ -140,13 +140,6 @@ const userProfile = async (req, res) => {
 
 const userProfileUpload = async (req, res) => {
   try {
-
-    console.log("CLOUDINARY CHECK =>",
-      process.env.CLOUDINARY_CLOUD_NAME,
-      process.env.CLOUDINARY_API_KEY ? "KEY_OK" : "KEY_MISSING",
-      process.env.CLOUDINARY_API_SECRET ? "SECRET_OK" : "SECRET_MISSING"
-    );
-
     const { id } = req.user;
 
     if (!req.file) {
@@ -158,60 +151,22 @@ const userProfileUpload = async (req, res) => {
       return errorResponse(res, 404, "User not found");
     }
 
-    user.profile = user.profile || {};
+    const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
-    const useCloudinary = Boolean(
-      process.env.CLOUDINARY_CLOUD_NAME &&
-      process.env.CLOUDINARY_API_KEY &&
-      process.env.CLOUDINARY_API_SECRET
-    );
+    const result = await cloudinary.uploader.upload(fileBase64, {
+      folder: "profiles",
+    });
 
-    // Delete old cloudinary image
-    if (useCloudinary && user.profile.public_id) {
-      await cloudinary.uploader.destroy(user.profile.public_id);
-    }
-
-    // ===== CLOUDINARY (PRODUCTION) =====
-
-    if (useCloudinary) {
-
-      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-
-      const result = await cloudinary.uploader.upload(fileBase64, {
-        folder: "profiles",
-        resource_type: "image"
-      });
-
-      user.profile.url = result.secure_url; // HTTPS ✔
-      user.profile.public_id = result.public_id;
-    }
-
-    // ===== LOCAL DEV FALLBACK =====
-
-    else {
-
-      // In production, require Cloudinary - don't fall back to local
-      if (process.env.NODE_ENV === 'production') {
-        return errorResponse(res, 500, "Cloudinary configuration required for production");
-      }
-
-      const uploadsDir = path.join(__dirname, "..", "..", "uploads");
-      fs.mkdirSync(uploadsDir, { recursive: true });
-
-      const filename = `profile-${id}-${Date.now()}.jpg`;
-      const filepath = path.join(uploadsDir, filename);
-
-      fs.writeFileSync(filepath, req.file.buffer);
-
-      user.profile.url = `/uploads/${filename}`;
-      user.profile.public_id = null;
-    }
+    user.profile = {
+      url: result.secure_url,     // ✅ HTTPS CLOUDINARY
+      public_id: result.public_id
+    };
 
     await user.save();
 
     return res.status(200).json({
       success: true,
-      profileUrl: user.profile.url,
+      profileUrl: result.secure_url
     });
 
   } catch (error) {

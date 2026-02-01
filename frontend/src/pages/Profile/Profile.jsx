@@ -5,7 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../api/axios";
-import { resolveUrl } from "../../utils/formatters";
+import { resolveUrl, resolveImageUrl } from "../../utils/formatters";
 
 const Profile = () => {
 

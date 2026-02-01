@@ -45,11 +45,7 @@ const AuthProvider = ({ children }) => {
     const formData = new FormData();
     formData.append("profile", file); // MUST MATCH BACKEND
 
-    const res = await axiosInstance.patch('/auth/profile-upload', formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    });
+    const res = await axiosInstance.patch('/auth/profile-upload', formData);
 
     return res?.data;
   };
