@@ -141,6 +141,12 @@ const userProfile = async (req, res) => {
 const userProfileUpload = async (req, res) => {
   try {
 
+    console.log("CLOUDINARY CHECK =>",
+      process.env.CLOUDINARY_CLOUD_NAME,
+      process.env.CLOUDINARY_API_KEY ? "KEY_OK" : "KEY_MISSING",
+      process.env.CLOUDINARY_API_SECRET ? "SECRET_OK" : "SECRET_MISSING"
+    );
+
     const { id } = req.user;
 
     if (!req.file) {
@@ -156,8 +162,8 @@ const userProfileUpload = async (req, res) => {
 
     const useCloudinary = Boolean(
       process.env.CLOUDINARY_CLOUD_NAME &&
-      process.env.CLOUDINARY_CLOUD_API_KEY &&
-      process.env.CLOUDINARY_CLOUD_API_SECRET
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
     );
 
     // Delete old cloudinary image
