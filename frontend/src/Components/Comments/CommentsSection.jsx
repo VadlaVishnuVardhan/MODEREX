@@ -9,7 +9,7 @@ const CommentsSection = ({ post, onPostUpdate }) => {
       onPostUpdate(updatedPost);
     }
   };
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [localPost, setLocalPost] = useState(post);
 
   const handleCommentAdded = (updatedPost) => {

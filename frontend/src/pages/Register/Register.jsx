@@ -8,6 +8,22 @@ const Register = () => {
   const { userRegister } = useAuth();
   const navigate = useNavigate();
 
+  const [profileImage, setProfileImage] = useState(null);
+  const [previewProfile, setPreviewProfile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 3 * 1024 * 1024) {
+      toast.warn("Max 3MB allowed");
+      return;
+    }
+
+    setPreviewProfile(URL.createObjectURL(file));
+    setProfileImage(file);
+  };
+
   const handleRegister = async (e) => {
 
     e.preventDefault();
@@ -18,7 +34,7 @@ const Register = () => {
 
     try {
 
-      const res = await userRegister({ name, email, password });
+      const res = await userRegister({ name, email, password }, profileImage);
 
       if (res?.success) {
         toast.success(res?.message || "Registered successfully");
@@ -55,6 +71,30 @@ const Register = () => {
         >
           Moderex Sign Up
         </motion.h2>
+
+        {/* PROFILE IMAGE UPLOAD */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <img
+              src={previewProfile || "/avatar.svg"}
+              alt="profile"
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #e5e7eb"
+              }}
+            />
+            <input
+              type="file"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={handleFileChange}
+              accept="image/*"
+            />
+          </div>
+          <p className="text-sm text-gray-600">Click to upload profile image (optional)</p>
+        </div>
 
         {/* FORM */}
         <form className="flex flex-col gap-4" onSubmit={handleRegister}>

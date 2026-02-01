@@ -166,27 +166,23 @@ const Profile = () => {
         <div className="flex gap-8 items-center bg-white shadow p-6 rounded-lg">
 
           <div className="relative">
-
-            {(previewProfile || authUser?.profile?.url) && (
-              <img
-                src={previewProfile || authUser.profile.url}
-                alt="profile"
-                style={{
-                  width: "110px",
-                  height: "110px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "2px solid #e5e7eb"
-                }}
-              />
-            )}
+            <img
+              src={previewProfile || authUser?.profile?.url || "/avatar.svg"}
+              alt="profile"
+              style={{
+                width: "110px",
+                height: "110px",
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #e5e7eb"
+              }}
+            />
 
             <input
               type="file"
               className="absolute inset-0 opacity-0 cursor-pointer"
               onChange={(e) => handleFile(e.target.files[0])}
             />
-
           </div>
 
           <div>

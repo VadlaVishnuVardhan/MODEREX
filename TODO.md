@@ -1,6 +1,10 @@
-# TODO: Fix Mixed Content Error by Removing Local Uploads
+# TODO List for Fixing Registration and Comments Issues
 
-- [x] Edit `backend/src/controllers/auth.controller.js` to remove local upload fallback and use only Cloudinary URLs for profile uploads.
-- [ ] Deploy the changes to production.
-- [ ] Test profile image upload to ensure it returns a Cloudinary HTTPS URL.
-- [ ] Instruct existing users with local URLs in the database to upload new profile images to replace them.
+## Tasks
+- [ ] Add circular profile image upload section to Register.jsx
+- [ ] Update CommentsSection.jsx to hide comments by default
+- [ ] Test the changes to ensure functionality works as expected
+
+## Notes
+- Profile image upload should be optional during registration.
+- Comments should be hidden by default in the CommentsSection component.

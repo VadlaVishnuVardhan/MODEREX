@@ -34,8 +34,19 @@ const AuthProvider = ({ children }) => {
 
 
   // REGISTER
-  const userRegister = async (data) => {
-    const res = await axiosInstance.post('/auth/register', data);
+  const userRegister = async (data, profileImage) => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    if (profileImage) {
+      formData.append('profileImage', profileImage);
+    }
+    const res = await axiosInstance.post('/auth/register', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return res?.data;
   };
 

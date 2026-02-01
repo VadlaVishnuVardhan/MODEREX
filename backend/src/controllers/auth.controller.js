@@ -23,11 +23,33 @@ const userRegister = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
     });
+
+    // Handle profile image upload if provided
+    if (req.file) {
+      // Check if Cloudinary is configured
+      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        return errorResponse(res, 500, "Cloudinary not configured");
+      }
+
+      // Upload to cloudinary
+      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+      const result = await cloudinary.uploader.upload(fileBase64, {
+        folder: "profiles"
+      });
+
+      newUser.profile = {
+        url: result.secure_url,
+        public_id: result.public_id
+      };
+
+      await newUser.save();
+    }
 
     return res.status(201).json({
       success: true,
