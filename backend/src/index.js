@@ -11,20 +11,32 @@ const adminRouter = require('./routes/admin.route');
 
 const app = express();
 
-// ================= CORS CONFIG (FINAL FIX) =================
+// ================= FINAL CORS CONFIG =================
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://moderex.vercel.app",
-    "https://moderex-dofcymt4p-vadla-vishnu-vardhans-projects.vercel.app"
-  ],
+  origin: function (origin, callback) {
+
+    // Allow requests with no origin (Postman, mobile apps)
+    if (!origin) return callback(null, true);
+
+    // Allow localhost (development)
+    if (origin.startsWith("http://localhost")) {
+      return callback(null, true);
+    }
+
+    // Allow ALL Vercel domains (production + preview)
+    if (origin.includes(".vercel.app")) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("CORS not allowed"));
+  },
   credentials: true
 }));
 
 app.options("*", cors());
 
-// ===========================================================
+// =====================================================
 
 // MIDDLEWARE
 app.use(express.json());
