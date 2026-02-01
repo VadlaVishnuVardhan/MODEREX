@@ -54,11 +54,18 @@ export const getModerationStatusText = (status) => {
 
 /**
  * Resolve URL to handle both absolute and relative paths
- * @param {string} url - URL to resolve
+ * @param {string} path - URL to resolve
  * @returns {string} Resolved URL
  */
-export const resolveUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  return `${import.meta.env.VITE_API_URL}${url}`;
+export const resolveUrl = (path) => {
+  if (!path) return "";
+
+  // Cloudinary URLs already HTTPS
+  if (path.startsWith("http")) {
+    return path;
+  }
+
+  const base = import.meta.env.VITE_API_URL;
+
+  return `${base}${path}`;
 };

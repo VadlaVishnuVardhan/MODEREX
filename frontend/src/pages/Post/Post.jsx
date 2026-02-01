@@ -3,13 +3,12 @@ import axiosInstance from "../../api/axios";
 import { toast } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
+import { resolveUrl } from "../../utils/formatters";
 
 const Post = () => {
 
   const { search } = useAuth();
   const [posts, setPosts] = useState([]);
-
-  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
 
@@ -47,13 +46,7 @@ const Post = () => {
             <div className="flex items-center gap-3 p-4 border-b">
 
               <img
-                src={
-                  item?.userId?.profile?.url?.startsWith("http")
-                    ? item.userId.profile.url
-                    : item?.userId?.profile?.url
-                    ? `${BASE_URL}${item.userId.profile.url}`
-                    : "/avatar.jpg"
-                }
+                src={resolveUrl(item?.userId?.profile?.url) || "/avatar.jpg"}
                 className="w-10 h-10 rounded-full object-cover"
                 alt="profile"
               />

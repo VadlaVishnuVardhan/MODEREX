@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../api/axios";
+import { resolveUrl } from "../../utils/formatters";
 
 const Profile = () => {
 
@@ -21,7 +22,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const BASE_URL = import.meta.env.VITE_API_URL;
+
 
   // ================= FETCH PROFILE =================
   useEffect(() => {
@@ -229,25 +230,13 @@ const Profile = () => {
 
                 {item.type === "reel" ? (
                   <video
-                    src={
-                      item?.video?.url?.startsWith("http")
-                        ? item.video.url
-                        : item?.video?.url
-                        ? `${BASE_URL}${item.video.url}`
-                        : null
-                    }
+                    src={resolveUrl(item?.video?.url)}
                     className="h-[220px] w-full object-cover"
                     controls
                   />
                 ) : (
                   <img
-                    src={
-                      item?.image?.url?.startsWith("http")
-                        ? item.image.url
-                        : item?.image?.url
-                        ? `${BASE_URL}${item.image.url}`
-                        : null
-                    }
+                    src={resolveUrl(item?.image?.url)}
                     className="h-[220px] w-full object-cover"
                     alt="post"
                   />

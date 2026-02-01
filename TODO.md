@@ -12,6 +12,8 @@
 - [x] Add CORS headers to static files in backend
 - [x] Investigate and fix 500 error on post creation
 - [x] Test the fixes
+- [x] Update resolveUrl function to handle HTTPS/HTTP properly
+- [x] Replace all BASE_URL usage with resolveUrl in frontend components
 
 ## Changes Made
 - Added CORS headers to /uploads static files in backend/src/index.js
