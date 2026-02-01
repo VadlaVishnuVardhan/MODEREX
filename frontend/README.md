@@ -165,18 +165,3 @@ Moderex/
 └── MODERATION_SETUP.md
 ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is licensed under the ISC License.
-
-## Support
-
-For support or questions, please check the MODERATION_SETUP.md file or contact the development team.
