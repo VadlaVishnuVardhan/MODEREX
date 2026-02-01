@@ -33,6 +33,7 @@ const userRegister = async (req, res) => {
       success: true,
       message: "User registered successfully.",
     });
+
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -42,6 +43,7 @@ const userRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
   try {
+
     const { email, password } = req.body || {};
 
     if (!email || !password) {
@@ -58,24 +60,25 @@ const userLogin = async (req, res) => {
       return errorResponse(res, 401, "Invalid Password.");
     }
 
-    // ✅ SAFE SECRET FALLBACK
-    const secret =
-      process.env.JWT_SECRET || "render_production_fallback_secret";
+    // ✅ PRODUCTION SAFE JWT
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET missing in environment variables");
+    }
 
     const token = jwt.sign(
       {
         id: user._id,
         isAdmin: user.isAdmin || false,
       },
-      secret,
+      process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    // ✅ CROSS DOMAIN COOKIE FIX (VERCEL + RENDER)
+    // ✅ CROSS DOMAIN COOKIE FIX
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: true,      // HTTPS only
+      sameSite: "none",  // Cross domain cookie
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -83,6 +86,7 @@ const userLogin = async (req, res) => {
       success: true,
       message: "User logged in successfully.",
     });
+
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -92,6 +96,7 @@ const userLogin = async (req, res) => {
 
 const userLogout = async (req, res) => {
   try {
+
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,
@@ -102,6 +107,7 @@ const userLogout = async (req, res) => {
       success: true,
       message: "User logged out successfully.",
     });
+
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -111,6 +117,7 @@ const userLogout = async (req, res) => {
 
 const userProfile = async (req, res) => {
   try {
+
     const { id } = req.user;
 
     const user = await User.findById(id).select("-password");
@@ -123,6 +130,7 @@ const userProfile = async (req, res) => {
       success: true,
       user,
     });
+
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
@@ -132,6 +140,7 @@ const userProfile = async (req, res) => {
 
 const userProfileUpload = async (req, res) => {
   try {
+
     const { id } = req.user;
 
     if (!req.file) {
@@ -147,8 +156,8 @@ const userProfileUpload = async (req, res) => {
 
     const useCloudinary = Boolean(
       process.env.CLOUDINARY_CLOUD_NAME &&
-        process.env.CLOUDINARY_CLOUD_API_KEY &&
-        process.env.CLOUDINARY_CLOUD_API_SECRET
+      process.env.CLOUDINARY_CLOUD_API_KEY &&
+      process.env.CLOUDINARY_CLOUD_API_SECRET
     );
 
     // Delete old cloudinary image
@@ -159,21 +168,22 @@ const userProfileUpload = async (req, res) => {
     // ===== CLOUDINARY (PRODUCTION) =====
 
     if (useCloudinary) {
-      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
-        "base64"
-      )}`;
+
+      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
       const result = await cloudinary.uploader.upload(fileBase64, {
         folder: "profiles",
+        resource_type: "image"
       });
 
       user.profile.url = result.secure_url; // HTTPS ✔
       user.profile.public_id = result.public_id;
     }
 
-    // ===== LOCAL FALLBACK (DEV ONLY) =====
+    // ===== LOCAL DEV FALLBACK =====
 
     else {
+
       const uploadsDir = path.join(__dirname, "..", "..", "uploads");
       fs.mkdirSync(uploadsDir, { recursive: true });
 
@@ -192,6 +202,7 @@ const userProfileUpload = async (req, res) => {
       success: true,
       profileUrl: user.profile.url,
     });
+
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }

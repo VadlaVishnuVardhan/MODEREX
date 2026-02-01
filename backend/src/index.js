@@ -10,6 +10,9 @@ const adminRouter = require('./routes/admin.route');
 
 const app = express();
 
+// ✅ REQUIRED FOR RENDER HTTPS COOKIE FIX
+app.set("trust proxy", 1);
+
 // ===================== UNIVERSAL CORS FIX (FINAL) =====================
 
 const allowedOrigins = [
@@ -29,18 +32,20 @@ app.use((req, res, next) => {
   }
 
   res.setHeader("Access-Control-Allow-Credentials", "true");
+
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET,POST,PUT,DELETE,OPTIONS"
   );
+
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
   );
 
-  // ✅ IMPORTANT: Proper preflight handling
+  // ✅ Preflight Fix
   if (req.method === "OPTIONS") {
-    return res.status(204).end();
+    return res.sendStatus(200);
   }
 
   next();
