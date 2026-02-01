@@ -80,8 +80,8 @@ const createPost = async (req, res) => {
 
     const useCloudinary = Boolean(
       process.env.CLOUDINARY_CLOUD_NAME &&
-      process.env.CLOUDINARY_CLOUD_API_KEY &&
-      process.env.CLOUDINARY_CLOUD_API_SECRET
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
     );
 
     // Force Cloudinary usage in production to avoid mixed content issues
