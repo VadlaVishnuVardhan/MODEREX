@@ -144,37 +144,47 @@ const userProfileUpload = async (req, res) => {
     const { id } = req.user;
 
     if (!req.file) {
-      return errorResponse(res, 400, "Profile image required");
+      return errorResponse(res, 400, 'Profile image required');
     }
 
     const user = await User.findById(id);
     if (!user) {
-      return errorResponse(res, 404, "User not found");
+      return errorResponse(res, 404, 'User not found');
     }
 
-    user.profile = user.profile || {};
+    // 🔥 FORCE CLOUDINARY IN PRODUCTION
+    const isProd = process.env.NODE_ENV === "production";
 
-    // ❌ REMOVE LOCAL STORAGE
-    // ✅ ONLY CLOUDINARY
+    if (!isProd) {
+      return errorResponse(res, 500, "Local uploads disabled in production");
+    }
 
-    const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    // Delete old cloudinary image
+    if (user.profile?.public_id) {
+      await cloudinary.uploader.destroy(user.profile.public_id);
+    }
+
+    // Upload to cloudinary
+    const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
     const result = await cloudinary.uploader.upload(fileBase64, {
-      folder: "moderex_profiles"
+      folder: "profiles"
     });
 
-    user.profile.url = result.secure_url; // HTTPS URL
-    user.profile.public_id = result.public_id;
+    user.profile = {
+      url: result.secure_url,     // ✅ HTTPS URL
+      public_id: result.public_id
+    };
 
     await user.save();
 
     return res.status(200).json({
       success: true,
-      profileUrl: user.profile.url
+      profileUrl: result.secure_url
     });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return errorResponse(res, 500, error.message);
   }
 };
