@@ -88,13 +88,7 @@ const Reel = () => {
           <div className="h-[450px]">
 
             <video
-              src={
-                item?.video?.url?.startsWith("http")
-                  ? item.video.url
-                  : item?.video?.url
-                  ? `${BASE_URL}${item.video.url}`
-                  : null
-              }
+              src={resolveUrl(item?.video?.url)}
               controls
               className="w-full h-full object-cover"
             />

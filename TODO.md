@@ -14,6 +14,8 @@
 - [x] Test the fixes
 - [x] Update resolveUrl function to handle HTTPS/HTTP properly
 - [x] Replace all BASE_URL usage with resolveUrl in frontend components
+- [x] Add missing imports for resolveUrl in all components
+- [x] Fix all media URL constructions to use resolveUrl
 
 ## Changes Made
 - Added CORS headers to /uploads static files in backend/src/index.js

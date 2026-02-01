@@ -63,25 +63,13 @@ const Post = () => {
 
             {item.type === "reel" ? (
               <video
-                src={
-                  item?.video?.url?.startsWith("http")
-                    ? item.video.url
-                    : item?.video?.url
-                    ? item.video.url
-                    : null
-                }
+                src={resolveUrl(item?.video?.url)}
                 className="w-full h-[420px] object-cover"
                 controls
               />
             ) : (
               <img
-                src={
-                  item?.image?.url?.startsWith("http")
-                    ? item.image.url
-                    : item?.image?.url
-                    ? item.image.url
-                    : null
-                }
+                src={resolveUrl(item?.image?.url)}
                 alt={item?.title}
                 className="w-full h-[420px] object-cover"
               />

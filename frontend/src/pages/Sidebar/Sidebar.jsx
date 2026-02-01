@@ -5,6 +5,7 @@ import { FaShieldAlt } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import useAuth from "../../hooks/useAuth";
+import { resolveUrl } from "../../utils/formatters";
 
 const navLinks = [
   {
