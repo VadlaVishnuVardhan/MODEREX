@@ -1,7 +1,6 @@
-# TODO: Fix Profile Upload Issues
+# TODO: Fix Mixed Content Error by Removing Local Uploads
 
-## Tasks
-- [x] Fix userProfileUpload logic in backend/src/controllers/auth.controller.js to handle production (Cloudinary) and development (local) correctly
-- [x] Fix Cloudinary API key environment variable name in backend/src/index.js to match utils.js
-- [x] Investigate and fix image loading error (ERR_BLOCKED_BY_CLIENT) if persists after fixes
-- [ ] Test profile upload in both environments
+- [x] Edit `backend/src/controllers/auth.controller.js` to remove local upload fallback and use only Cloudinary URLs for profile uploads.
+- [ ] Deploy the changes to production.
+- [ ] Test profile image upload to ensure it returns a Cloudinary HTTPS URL.
+- [ ] Instruct existing users with local URLs in the database to upload new profile images to replace them.
