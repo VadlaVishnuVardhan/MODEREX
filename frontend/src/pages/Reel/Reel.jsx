@@ -11,6 +11,8 @@ const Reel = () => {
   const [reels, setReels] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
 
     const fetchReels = async () => {
@@ -24,7 +26,7 @@ const Reel = () => {
 
         setReels(res?.data?.posts || []);
 
-      } catch (error) {
+      } catch {
         toast.error("Failed to load reels");
         setReels([]);
       } finally {
@@ -71,8 +73,15 @@ const Reel = () => {
             <div className="flex items-center gap-3 p-4 border-b">
 
               <img
-                src={(item?.userId?.profile?.url?.startsWith('http') ? item.userId.profile.url : (item?.userId?.profile?.url ? `http://localhost:3000${item.userId.profile.url}` : "/avatar.jpg"))}
+                src={
+                  item?.userId?.profile?.url?.startsWith("http")
+                    ? item.userId.profile.url
+                    : item?.userId?.profile?.url
+                    ? `${BASE_URL}${item.userId.profile.url}`
+                    : "/avatar.jpg"
+                }
                 className="w-10 h-10 rounded-full object-cover"
+                alt="profile"
               />
 
               <h5 className="font-semibold capitalize">
@@ -86,7 +95,13 @@ const Reel = () => {
           <div className="h-[450px]">
 
             <video
-              src={item?.video?.url?.startsWith('http') ? item.video.url : (item?.video?.url ? `http://localhost:3000${item.video.url}` : null)}
+              src={
+                item?.video?.url?.startsWith("http")
+                  ? item.video.url
+                  : item?.video?.url
+                  ? `${BASE_URL}${item.video.url}`
+                  : null
+              }
               controls
               className="w-full h-full object-cover"
             />

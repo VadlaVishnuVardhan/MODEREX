@@ -9,6 +9,8 @@ const Post = () => {
   const { search } = useAuth();
   const [posts, setPosts] = useState([]);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
 
     const fetchPosts = async () => {
@@ -45,8 +47,15 @@ const Post = () => {
             <div className="flex items-center gap-3 p-4 border-b">
 
               <img
-                src={(item?.userId?.profile?.url?.startsWith('http') ? item.userId.profile.url : (item?.userId?.profile?.url ? `http://localhost:3000${item.userId.profile.url}` : "/avatar.jpg"))}
+                src={
+                  item?.userId?.profile?.url?.startsWith("http")
+                    ? item.userId.profile.url
+                    : item?.userId?.profile?.url
+                    ? `${BASE_URL}${item.userId.profile.url}`
+                    : "/avatar.jpg"
+                }
                 className="w-10 h-10 rounded-full object-cover"
+                alt="profile"
               />
 
               <h5 className="font-semibold capitalize">
@@ -61,13 +70,25 @@ const Post = () => {
 
             {item.type === "reel" ? (
               <video
-                src={item.video?.url?.startsWith('http') ? item.video.url : (item.video?.url ? `http://localhost:3000${item.video.url}` : null)}
+                src={
+                  item?.video?.url?.startsWith("http")
+                    ? item.video.url
+                    : item?.video?.url
+                    ? `${BASE_URL}${item.video.url}`
+                    : null
+                }
                 className="w-full h-[420px] object-cover"
                 controls
               />
             ) : (
               <img
-                src={item.image?.url?.startsWith('http') ? item.image.url : (item.image?.url ? `http://localhost:3000${item.image.url}` : null)}
+                src={
+                  item?.image?.url?.startsWith("http")
+                    ? item.image.url
+                    : item?.image?.url
+                    ? `${BASE_URL}${item.image.url}`
+                    : null
+                }
                 alt={item?.title}
                 className="w-full h-[420px] object-cover"
               />

@@ -32,6 +32,7 @@ const navLinks = [
 const Sidebar = () => {
 
   const { authUser } = useAuth();
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   return (
     <motion.div
@@ -112,7 +113,13 @@ const Sidebar = () => {
               >
                 <img
                   className="w-8 h-8 rounded-full object-cover border"
-                  src={(authUser?.profile?.url?.startsWith('http') ? authUser.profile.url : (authUser?.profile?.url ? `http://localhost:3000${authUser.profile.url}` : "/avatar.jpg"))}
+                  src={
+                    authUser?.profile?.url?.startsWith("http")
+                      ? authUser.profile.url
+                      : authUser?.profile?.url
+                      ? `${BASE_URL}${authUser.profile.url}`
+                      : "/avatar.jpg"
+                  }
                   alt="profile"
                 />
                 Profile

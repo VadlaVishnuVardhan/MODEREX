@@ -16,33 +16,30 @@ const Profile = () => {
 
   const [loading, setLoading] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(false);
-
   const [posts, setPosts] = useState([]);
 
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // ================= FETCH PROFILE (SELF) =================
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
+  // ================= FETCH PROFILE =================
   useEffect(() => {
 
     const fetchProfile = async () => {
-
       try {
 
-        // Logged in user profile
         const userRes = await axiosInstance.get("/auth/profile");
         setAuthUser(userRes?.data?.user);
 
-        // User posts filtered by active tab
         const postRes = await axiosInstance.get(`/posts/user/${id}?type=${activeTab}`);
         setPosts(postRes?.data?.posts || []);
 
-      } catch (error) {
+      } catch {
         toast.error("Failed to load profile");
       } finally {
         setLoading(false);
       }
-
     };
 
     fetchProfile();
@@ -86,21 +83,19 @@ const Profile = () => {
         setProfileImage(null);
       }
 
-    } catch (err) {
+    } catch {
       toast.error("Upload failed");
     }
   };
 
   // ================= LOGOUT =================
   const handleLogout = async () => {
-
     try {
       await logoutUser();
       navigate("/login");
     } catch {
       toast.error("Logout failed");
     }
-
   };
 
   // ================= SWITCH TAB =================
@@ -111,10 +106,7 @@ const Profile = () => {
 
     try {
 
-      const res = await axiosInstance.get(
-        `/posts/user/${id}?type=${type}`
-      );
-
+      const res = await axiosInstance.get(`/posts/user/${id}?type=${type}`);
       setPosts(res?.data?.posts || []);
 
     } catch {
@@ -162,8 +154,16 @@ const Profile = () => {
           <div className="relative">
 
             <img
-              src={previewProfile || (authUser?.profile?.url?.startsWith('http') ? authUser.profile.url : (authUser?.profile?.url ? `http://localhost:3000${authUser.profile.url}` : "/avatar.jpg"))}
+              src={
+                previewProfile ||
+                (authUser?.profile?.url?.startsWith("http")
+                  ? authUser.profile.url
+                  : authUser?.profile?.url
+                  ? `${BASE_URL}${authUser.profile.url}`
+                  : "/avatar.jpg")
+              }
               className="w-36 h-36 rounded-full border object-cover"
+              alt="profile"
             />
 
             <input
@@ -199,13 +199,17 @@ const Profile = () => {
         {/* TABS */}
         <div className="flex gap-10 justify-center border-b mt-8 pb-3">
 
-          <button onClick={() => switchTab("post")}
-            className={activeTab === "post" ? "text-blue-600" : ""}>
+          <button
+            onClick={() => switchTab("post")}
+            className={activeTab === "post" ? "text-blue-600" : ""}
+          >
             <IoMdGrid /> Posts
           </button>
 
-          <button onClick={() => switchTab("reel")}
-            className={activeTab === "reel" ? "text-blue-600" : ""}>
+          <button
+            onClick={() => switchTab("reel")}
+            className={activeTab === "reel" ? "text-blue-600" : ""}
+          >
             <SiYoutubeshorts /> Reels
           </button>
 
@@ -225,14 +229,27 @@ const Profile = () => {
 
                 {item.type === "reel" ? (
                   <video
-                    src={item.video?.url?.startsWith('http') ? item.video.url : (item.video?.url ? `http://localhost:3000${item.video.url}` : null)}
+                    src={
+                      item?.video?.url?.startsWith("http")
+                        ? item.video.url
+                        : item?.video?.url
+                        ? `${BASE_URL}${item.video.url}`
+                        : null
+                    }
                     className="h-[220px] w-full object-cover"
                     controls
                   />
                 ) : (
                   <img
-                    src={item.image?.url?.startsWith('http') ? item.image.url : (item.image?.url ? `http://localhost:3000${item.image.url}` : null)}
+                    src={
+                      item?.image?.url?.startsWith("http")
+                        ? item.image.url
+                        : item?.image?.url
+                        ? `${BASE_URL}${item.image.url}`
+                        : null
+                    }
                     className="h-[220px] w-full object-cover"
+                    alt="post"
                   />
                 )}
 

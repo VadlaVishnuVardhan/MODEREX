@@ -60,5 +60,5 @@ export const getModerationStatusText = (status) => {
 export const resolveUrl = (url) => {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  return `http://localhost:3000${url}`;
+  return `${import.meta.env.VITE_API_URL}${url}`;
 };
