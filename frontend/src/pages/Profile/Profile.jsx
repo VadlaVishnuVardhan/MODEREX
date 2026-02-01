@@ -181,6 +181,13 @@ const Profile = () => {
               {authUser?.name}
             </h2>
 
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProfileImage(e.target.files[0])}
+              className="mb-3"
+            />
+
             <button
               onClick={handleProfileUpload}
               className="bg-blue-600 text-white px-4 py-1 rounded mt-2"
