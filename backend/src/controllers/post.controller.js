@@ -111,9 +111,8 @@ const createPost = async (req, res) => {
       const filename = `post-${id}-${Date.now()}.${ext}`;
       const filepath = path.join(uploadsDir, filename);
       fs.writeFileSync(filepath, file.buffer);
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
       uploaded = {
-        secure_url: `${baseUrl}/uploads/posts/${filename}`,
+        secure_url: `/uploads/posts/${filename}`,
         public_id: null,
       };
     }

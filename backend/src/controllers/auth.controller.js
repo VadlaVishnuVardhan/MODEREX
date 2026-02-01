@@ -163,8 +163,7 @@ const userProfileUpload = async (req, res) => {
             const filepath = path.join(uploadsDir, filename);
             fs.writeFileSync(filepath, req.file.buffer);
 
-            const baseUrl = `${req.protocol}://${req.get('host')}`;
-            user.profile.url = `${baseUrl}/uploads/${filename}`;
+            user.profile.url = `/uploads/${filename}`;
             user.profile.public_id = null;
         }
 
