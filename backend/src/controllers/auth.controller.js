@@ -157,34 +157,68 @@ const userProfileUpload = async (req, res) => {
 
     if (isProd) {
       // Use Cloudinary in production
+      // Delete old cloudinary image
+      if (user.profile?.public_id) {
+        await cloudinary.uploader.destroy(user.profile.public_id);
+      }
+
+      // Upload to cloudinary
+      const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+
+      const result = await cloudinary.uploader.upload(fileBase64, {
+        folder: "profiles"
+      });
+
+      user.profile = {
+        url: result.secure_url,     // ✅ HTTPS URL
+        public_id: result.public_id
+      };
+
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        profileUrl: result.secure_url
+      });
     } else {
       // Use local uploads in development
-      return errorResponse(res, 500, "Local uploads disabled in production");
+      // Delete old local image if exists
+      if (user.profile?.url && user.profile.url.startsWith('/uploads/')) {
+        const oldPath = path.join(__dirname, '..', '..', user.profile.url);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
+      }
+
+      // Generate unique filename
+      const ext = path.extname(req.file.originalname);
+      const filename = `profile-${user._id}-${Date.now()}${ext}`;
+      const filepath = path.join(__dirname, '..', '..', 'uploads', filename);
+
+      // Ensure uploads directory exists
+      const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      // Write file
+      fs.writeFileSync(filepath, req.file.buffer);
+
+      const baseUrl = process.env.NODE_ENV === "production" ? "https://moderex.onrender.com" : "http://localhost:3000";
+      const localUrl = `${baseUrl}/uploads/${filename}`;
+
+      user.profile = {
+        url: localUrl,
+        public_id: null // No public_id for local
+      };
+
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        profileUrl: localUrl
+      });
     }
-
-    // Delete old cloudinary image
-    if (user.profile?.public_id) {
-      await cloudinary.uploader.destroy(user.profile.public_id);
-    }
-
-    // Upload to cloudinary
-    const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
-
-    const result = await cloudinary.uploader.upload(fileBase64, {
-      folder: "profiles"
-    });
-
-    user.profile = {
-      url: result.secure_url,     // ✅ HTTPS URL
-      public_id: result.public_id
-    };
-
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      profileUrl: result.secure_url
-    });
 
   } catch (error) {
     console.error(error);
