@@ -12,11 +12,11 @@ Automatic detection of hate speech, self-harm, sexual content, violence, and spa
 User Profile page to manage profile details, view posts, and perform quick actions like save and logout.
 
 ### Real-time Flagging
-![Real-time Flagging](images/post_management.png)
+![Real-time Flagging](images/Real_time_Flagging.png)
 Inappropriate comments are flagged instantly for review, with severe violations auto-rejected.
 
 ### Admin Dashboard
-![Admin Dashboard](images/Real_time_Flagging.png)
+![Admin Dashboard](images/Admin_dashboard.png)
 Comprehensive dashboard for reviewing and managing flagged content, with statistics and filtering options.
 
 ### User Authentication
