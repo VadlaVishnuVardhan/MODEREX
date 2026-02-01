@@ -140,6 +140,7 @@ const userProfile = async (req, res) => {
 
 const userProfileUpload = async (req, res) => {
   try {
+
     const { id } = req.user;
 
     if (!req.file) {
@@ -151,25 +152,29 @@ const userProfileUpload = async (req, res) => {
       return errorResponse(res, 404, "User not found");
     }
 
+    user.profile = user.profile || {};
+
+    // ❌ REMOVE LOCAL STORAGE
+    // ✅ ONLY CLOUDINARY
+
     const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
     const result = await cloudinary.uploader.upload(fileBase64, {
-      folder: "profiles",
+      folder: "moderex_profiles"
     });
 
-    user.profile = {
-      url: result.secure_url,     // ✅ HTTPS CLOUDINARY
-      public_id: result.public_id
-    };
+    user.profile.url = result.secure_url; // HTTPS URL
+    user.profile.public_id = result.public_id;
 
     await user.save();
 
     return res.status(200).json({
       success: true,
-      profileUrl: result.secure_url
+      profileUrl: user.profile.url
     });
 
   } catch (error) {
+    console.log(error);
     return errorResponse(res, 500, error.message);
   }
 };
