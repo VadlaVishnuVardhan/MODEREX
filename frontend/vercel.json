@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/uploads/(.*)",
-      "destination": "https://your-backend-domain.com/uploads/$1"
+      "destination": "https://moderex.onrender.com/uploads/$1"
     },
     {
       "source": "/(.*)",

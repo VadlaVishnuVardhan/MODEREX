@@ -14,7 +14,7 @@ const app = express();
 // ===================== CORS CONFIG =====================
 
 app.use(cors({
-  origin: ['https://moderex.vercel.app'],
+  origin: ['https://moderex.vercel.app', 'https://moderex-gadie4ud6-vadla-vishnu-vardhans-projects.vercel.app'],
   credentials: true
 }));
 
