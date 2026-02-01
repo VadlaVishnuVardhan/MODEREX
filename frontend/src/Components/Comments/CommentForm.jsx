@@ -3,12 +3,13 @@ import { toast } from 'react-toastify';
 import axiosInstance from '../../api/axios';
 
 const CommentForm = ({ postId, onCommentAdded }) => {
+
   const [text, setText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!text.trim()) {
       toast.warn('Please enter a comment');
       return;
@@ -17,42 +18,43 @@ const CommentForm = ({ postId, onCommentAdded }) => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/posts/${postId}/comment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ text: text.trim() }),
-      });
 
-      const data = await response.json();
+      const res = await axiosInstance.post(
+        `/posts/${postId}/comment`,
+        { text: text.trim() },
+        { withCredentials: true } // ✅ IMPORTANT FIX
+      );
+
+      const data = res.data;
 
       if (data.success) {
         setText('');
         toast.success(data.message || 'Comment added');
-        
+
         if (data.moderation?.flagged) {
           toast.warning('Your comment has been flagged for review');
         }
-        
+
         if (onCommentAdded) {
           onCommentAdded(data.post);
         }
+
       } else {
         toast.error(data.message || 'Failed to add comment');
       }
+
     } catch (error) {
-      toast.error('Failed to add comment');
       console.error('Comment error:', error);
-    } finally {
-      setIsSubmitting(false);
+      toast.error('Failed to add comment');
     }
+
+    setIsSubmitting(false);
   };
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
       <div className="flex gap-2">
+
         <input
           type="text"
           value={text}
@@ -61,6 +63,7 @@ const CommentForm = ({ postId, onCommentAdded }) => {
           className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={isSubmitting}
         />
+
         <button
           type="submit"
           disabled={isSubmitting || !text.trim()}
@@ -68,6 +71,7 @@ const CommentForm = ({ postId, onCommentAdded }) => {
         >
           {isSubmitting ? 'Posting...' : 'Post'}
         </button>
+
       </div>
     </form>
   );

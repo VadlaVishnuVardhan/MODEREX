@@ -34,26 +34,21 @@ app.use((req, res, next) => {
 
   const origin = req.headers.origin;
 
-  if (
-    allowedOrigins.includes(origin) ||
-    origin?.includes("vercel.app")
-  ) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
+  if (allowedOrigins.includes(origin) || origin?.includes("vercel.app")) {
+    res.header("Access-Control-Allow-Origin", origin);
   }
 
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-
-  res.setHeader(
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header(
     "Access-Control-Allow-Methods",
     "GET,POST,PUT,DELETE,OPTIONS"
   );
-
-  res.setHeader(
+  res.header(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
   );
 
-  // ✅ Preflight Fix
+  // IMPORTANT FIX FOR BLOCKED REQUEST
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
