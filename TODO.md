@@ -6,13 +6,15 @@
 - [x] Changed URL construction in post.controller.js to use relative paths (/uploads/posts/filename)
 - [x] Added Vite proxy in vite.config.js to proxy /uploads to http://localhost:3000 for local development
 - [x] Added Vercel rewrite in vercel.json to proxy /uploads to backend domain for production
-- [x] Fixed CORS configuration to allow the actual Vercel domain (https://moderex-gadie4ud6-vadla-vishnu-vardhans-projects.vercel.app)
+- [x] Fixed CORS configuration to allow multiple Vercel domains
 - [x] Updated vercel.json with the actual backend URL (https://moderex.onrender.com)
 
 ## Remaining Tasks
-- [ ] Test local development: Start frontend and backend, verify images load without mixed content warnings
-- [ ] Test production: Deploy backend changes and verify images load correctly on Vercel
+- [ ] Redeploy backend to Render with updated CORS configuration
+- [ ] Redeploy frontend to Vercel with updated vercel.json
+- [ ] Test production: Verify images load without mixed content warnings and API requests work
 
 ## Notes
 - Backend is deployed on Render (https://moderex.onrender.com) with HTTPS
 - Frontend is deployed on Vercel with the correct CORS and proxy configurations
+- CORS now allows multiple Vercel domains to handle dynamic deployment URLs
