@@ -16,7 +16,7 @@ User Profile page to manage profile details, view posts, and perform quick actio
 Inappropriate comments are flagged instantly for review, with severe violations auto-rejected.
 
 ### Admin Dashboard
-![Admin Dashboard](images/Admin_dashboard.png)
+![Admin Dashboard](images/Real_time_Flagging.png)
 Comprehensive dashboard for reviewing and managing flagged content, with statistics and filtering options.
 
 ### User Authentication
