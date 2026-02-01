@@ -155,7 +155,10 @@ const userProfileUpload = async (req, res) => {
     // 🔥 FORCE CLOUDINARY IN PRODUCTION
     const isProd = process.env.NODE_ENV === "production";
 
-    if (!isProd) {
+    if (isProd) {
+      // Use Cloudinary in production
+    } else {
+      // Use local uploads in development
       return errorResponse(res, 500, "Local uploads disabled in production");
     }
 

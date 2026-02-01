@@ -25,32 +25,26 @@ app.set("trust proxy", 1);
 
 // ===================== UNIVERSAL CORS FIX (FINAL) =====================
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://moderex.vercel.app"
-];
-
 app.use((req, res, next) => {
 
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin) || origin?.includes("vercel.app")) {
-    res.header("Access-Control-Allow-Origin", origin);
+  if (origin && origin.includes("vercel.app")) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET,POST,PUT,DELETE,OPTIONS"
+    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
   );
-  res.header(
+  res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
   );
 
-  // IMPORTANT FIX FOR BLOCKED REQUEST
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   }
 
   next();

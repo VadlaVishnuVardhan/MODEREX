@@ -1,13 +1,20 @@
-# Profile Image Fixes TODO
+# TODO: Fix Profile Image Issues
 
-## Backend Fixes
-- [x] Replace userProfileUpload in auth.controller.js to force Cloudinary only, remove local fallback
+## Problem 1: Still Using localhost Image URL
+- Console shows: http://localhost:3000/uploads/profile-xxxx.jpg
+- Old profile URL is still stored in database
+- Cloudinary upload is NOT being used yet
+- Mixed content error happens
+- Fix: Re-upload profile image AFTER Cloudinary fix deployment
 
-## Frontend Fixes
-- [x] Add resolveImageUrl function to formatters.js
-- [x] Update Profile.jsx to use resolveImageUrl for profile image src
-- [x] Remove manual Content-Type header in AuthProvider.jsx for profile upload
+## Problem 2: CORS BLOCKING PROFILE UPLOAD (PATCH)
+- Error: Method PATCH is not allowed by Access-Control-Allow-Methods
+- Backend CORS config allows only: GET, POST, PUT, DELETE, OPTIONS
+- Profile upload uses: PATCH
+- Fix: Update CORS config to include PATCH
 
-## Testing
-- [x] Code changes implemented and syntax verified
-- [x] Ready for production deployment testing
+## Tasks
+- [ ] Update CORS config in `backend/src/index.js` to include PATCH
+- [ ] Fix logic in `userProfileUpload` to use Cloudinary in production
+- [ ] Run `fixProfileImages.js` to update existing localhost URLs to production URLs
+- [ ] Test profile upload after fixes
