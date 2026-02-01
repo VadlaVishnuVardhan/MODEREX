@@ -154,8 +154,6 @@ const Profile = () => {
 
           <div className="relative">
 
-            <p>{authUser?.profile?.url}</p>
-
             {(previewProfile || authUser?.profile?.url) && (
               <img
                 src={previewProfile || authUser.profile.url}
