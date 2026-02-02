@@ -30,7 +30,7 @@ const navLinks = [
   },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
 
   const { authUser } = useAuth();
 
@@ -40,8 +40,15 @@ const Sidebar = () => {
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
       className="max-w-[260px] w-full h-screen border-r bg-white shadow-md px-6 py-10 fixed left-0 top-0 z-20 hidden md:block"
-    >
-      <div className="flex flex-col gap-12">
+      >
+        {/* Close Button for Mobile */}
+        <button
+          onClick={onClose}
+          className="md:hidden absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        >
+          ✕
+        </button>
+        <div className="flex flex-col gap-12">
 
         {/* LOGO */}
         <motion.div
