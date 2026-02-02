@@ -15,7 +15,7 @@ const HomeLayout = () => {
         {/* Sidebar */}
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         {/* Main Layout */}
-        <main className={`w-full pt-4 transition-all duration-300 ${isSidebarOpen ? 'ml-[260px]' : 'md:ml-[260px] ml-0'}`}>
+        <main className={`w-full pt-4 transition-all duration-300 ${isSidebarOpen ? 'ml-[200px] md:ml-[260px]' : 'md:ml-[260px] ml-0'}`}>
             {/* Hamburger Menu for Mobile */}
             <button
               onClick={toggleSidebar}
