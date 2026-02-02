@@ -39,7 +39,7 @@ const Sidebar = () => {
       initial={{ x: -200, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="max-w-[260px] w-full h-screen border-r bg-white shadow-md px-6 py-10 fixed left-0 top-0 z-20"
+      className="max-w-[260px] w-full h-screen border-r bg-white shadow-md px-6 py-10 fixed left-0 top-0 z-20 hidden md:block"
     >
       <div className="flex flex-col gap-12">
 
