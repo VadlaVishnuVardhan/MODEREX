@@ -1,7 +1,0 @@
-- [x] Update AuthProvider.jsx to check for token before fetching profile
-- [x] Install cors package in backend
-- [x] Update backend/src/index.js to use cors middleware
-- [ ] Run git add .
-- [ ] Run git commit -m "Fix profile 403 before login"
-- [ ] Run git push
-- [ ] Redeploy Vercel
