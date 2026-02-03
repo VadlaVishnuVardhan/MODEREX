@@ -11,18 +11,24 @@ const AuthProvider = ({ children }) => {
 
   // Fetch logged in user (cookie auth)
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const res = await axiosInstance.get('/auth/profile');
-        setAuthUser(res?.data?.user || null);
-      } catch (error) {
-        setAuthUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+    const token = localStorage.getItem("token");
 
-    fetchUserProfile();
+    if (token) {
+      const fetchUserProfile = async () => {
+        try {
+          const res = await axiosInstance.get('/auth/profile');
+          setAuthUser(res?.data?.user || null);
+        } catch (error) {
+          setAuthUser(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchUserProfile();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
 

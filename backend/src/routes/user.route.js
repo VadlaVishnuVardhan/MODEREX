@@ -5,7 +5,7 @@ const { uploadFiles } = require('../utils/utils');
 const authRouter = express.Router();
 
 authRouter.get('/profile',authMiddleware,userProfile);
-authRouter.post('/register',userRegister);
+authRouter.post('/register', uploadFiles.single('profileImage'), userRegister);
 authRouter.post('/login',userLogin);
 authRouter.post('/logout', authMiddleware ,userLogout);
 authRouter.patch(

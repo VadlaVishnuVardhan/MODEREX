@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
@@ -23,34 +24,11 @@ const app = express();
 // ✅ REQUIRED FOR RENDER HTTPS COOKIE FIX
 app.set("trust proxy", 1);
 
-// ===================== UNIVERSAL CORS FIX (FINAL) =====================
-
-app.use((req, res, next) => {
-
-  const origin = req.headers.origin;
-
-  if (origin && origin.includes("vercel.app")) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
-
-// ============================================================
+app.use(cors({
+  origin: "https://moderex.vercel.app",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+}));
 
 // BODY PARSER
 app.use(express.json());
