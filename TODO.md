@@ -1,0 +1,6 @@
+- [ ] Add import { useState } from 'react'; to Profile.jsx (already present)
+- [ ] Add PATCH to Access-Control-Allow-Methods in backend/src/index.js (already present)
+- [ ] Run git add .
+- [ ] Run git commit -m "Fix useState import error and CORS PATCH"
+- [ ] Run git push
+- [ ] Redeploy Vercel
